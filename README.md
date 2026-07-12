@@ -275,6 +275,8 @@ Identify risky drivers using safety scores and driving history.
 🔔 Notifications
 📑 Reports
 🔐 Roles
+
+
 💻 10. Technology Stack
 🎨 Frontend
 React.js
@@ -294,6 +296,7 @@ Google Maps API / Leaflet
 ☁️ Deployment
 Vercel
 Render / Railway
+
 🔒 11. Security Features
 🔑 JWT Authentication
 🔐 Password Hashing
@@ -301,6 +304,8 @@ Render / Railway
 ✅ Input Validation
 🛡️ SQL Injection Protection
 🌐 HTTPS Support
+
+
 🚀 12. Future Enhancements
 📍 GPS Integration
 📡 IoT Vehicle Sensors
@@ -310,6 +315,7 @@ Render / Railway
 ⛽ Fuel Theft Detection
 🧠 AI Route Optimization
 🔔 Real-Time Notifications
+
 🎯 13. Expected Outcomes
 📈 Improved fleet efficiency
 💰 Reduced operational costs

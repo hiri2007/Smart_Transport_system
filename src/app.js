@@ -16,7 +16,7 @@ app.use((req, res, next) => {
 });
 
 // Serve static assets from public folder
-app.use(express.static(path.resolve('public')));
+app.use(express.static(path.resolve('public'), { extensions: ['html'] }));
 
 // Mount API router
 app.use('/api', apiRouter);

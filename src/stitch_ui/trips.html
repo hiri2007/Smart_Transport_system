@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TransitOps - Trip Dispatcher</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#0058be",
+                        "on-background": "#1b1b1d",
+                        "inverse-surface": "#303032",
+                        "surface-bright": "#fcf8fa",
+                        "tertiary-container": "#271901",
+                        "tertiary": "#000000",
+                        "on-surface-variant": "#45464d",
+                        "surface-container-high": "#eae7e9",
+                        "secondary-container": "#2170e4",
+                        "on-primary-container": "#7c839b",
+                        "surface-tint": "#565e74",
+                        "inverse-on-surface": "#f3f0f2",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#bec6e0",
+                        "surface": "#fcf8fa",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#fefcff",
+                        "primary-fixed": "#dae2fd",
+                        "primary": "#000000",
+                        "surface-container-highest": "#e4e2e4",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#bec6e0",
+                        "surface-container": "#f0edef",
+                        "on-tertiary-fixed-variant": "#574425",
+                        "primary-container": "#131b2e",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#dcd9db",
+                        "on-secondary-fixed": "#001a42",
+                        "background": "#fcf8fa",
+                        "surface-container-low": "#f6f3f5",
+                        "tertiary-fixed-dim": "#dec29a",
+                        "surface-variant": "#e4e2e4",
+                        "outline": "#76777d",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#1b1b1d",
+                        "tertiary-fixed": "#fcdeb5",
+                        "on-secondary-fixed-variant": "#004395",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "outline-variant": "#c6c6cd",
+                        "on-primary-fixed": "#131b2e",
+                        "on-tertiary-container": "#98805d",
+                        "on-tertiary-fixed": "#271901",
+                        "secondary-fixed": "#d8e2ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "sidebar-collapsed": "72px",
+                        "sidebar-width": "260px",
+                        "gutter": "16px",
+                        "container-margin": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "data-mono": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .sidebar-active {
+            background-color: #2170e4; /* secondary-container */
+            color: #fefcff; /* on-secondary-container */
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md selection:bg-secondary-container/30">
+<!-- Sidebar Navigation (Mandatory) -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-primary-container z-40 transition-all duration-200 hidden md:flex flex-col py-4 gap-1">
+<div class="px-gutter mb-8">
+<span class="font-headline-sm text-headline-sm font-bold text-on-primary-container">TransitOps</span>
+</div>
+<div class="flex items-center px-4 py-3 mx-2 gap-4 mb-6">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-secondary-container">Alex Rivera</span>
+<span class="text-[10px] text-on-primary-container/70">ID: TX-492</span>
+</div>
+</div>
+<nav class="flex-1 overflow-y-auto hide-scrollbar">
+<a class="text-on-primary-container/70 flex items-center px-4 py-3 mx-2 gap-3 hover:bg-secondary/10 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="text-on-primary-container/70 flex items-center px-4 py-3 mx-2 gap-3 hover:bg-secondary/10 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
+<span class="font-label-md text-label-md">Fleet</span>
+</a>
+<a class="text-on-primary-container/70 flex items-center px-4 py-3 mx-2 gap-3 hover:bg-secondary/10 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md">Drivers</span>
+</a>
+<a class="bg-secondary-container text-on-secondary-container rounded-lg mx-2 flex items-center px-4 py-3 gap-3" href="#">
+<span class="material-symbols-outlined" data-icon="route">route</span>
+<span class="font-label-md text-label-md">Trips</span>
+</a>
+<a class="text-on-primary-container/70 flex items-center px-4 py-3 mx-2 gap-3 hover:bg-secondary/10 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="build">build</span>
+<span class="font-label-md text-label-md">Maintenance</span>
+</a>
+<a class="text-on-primary-container/70 flex items-center px-4 py-3 mx-2 gap-3 hover:bg-secondary/10 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="local_gas_station">local_gas_station</span>
+<span class="font-label-md text-label-md">Fuel & Expenses</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-sidebar-width min-h-screen flex flex-col">
+<!-- Top App Bar (Mandatory) -->
+<header class="bg-surface sticky top-0 z-50 border-b border-outline-variant flex justify-between items-center px-gutter w-full h-14">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-primary">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary">Trip Dispatcher</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant hover:opacity-80 transition-opacity">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a Hispanic male fleet manager in his early 40s wearing a crisp white shirt. The background is a blurred corporate office setting with soft, warm daylighting and a high-key modern aesthetic. The focus is sharp on his confident yet approachable expression, matching a clean professional UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnGZfYHiidpgZZNlkmmvzJG1Ar4xtWZv8g2GJQX8MJCfVKejREnZxqoWmiemG-idJ_lGl3W0cLu4Iia1eCAmHpWztMzj6reue5pinjzmE0OqsV8NlIr6zj3gKdwMBwj6A709A_slR9sU-aErshSjuOaJzFj09tvlzedPSO-zJbl3HE-2d5TNygMo2nyToEXCmyZXs9ka14BeRPi_iT6DZ3su67BkhFfWRCDcIcEln7QtjAodDZC9CI"/>
+</button>
+</div>
+</header>
+<!-- Content Area -->
+<div class="flex-1 p-gutter max-w-7xl mx-auto w-full pb-24 md:pb-gutter">
+<!-- Bento Layout Container -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Stepper Section (Full Width) -->
+<section class="col-span-12 bg-white border border-outline-variant rounded-xl p-8 mb-4">
+<div class="flex items-center justify-between relative">
+<div class="absolute top-1/2 left-0 w-full h-0.5 bg-surface-container -translate-y-1/2 z-0"></div>
+<!-- Active Bar -->
+<div class="absolute top-1/2 left-0 w-1/2 h-0.5 bg-secondary -translate-y-1/2 z-0 transition-all duration-500"></div>
+<!-- Step 1: Draft (Completed) -->
+<div class="relative z-10 flex flex-col items-center gap-2 group">
+<div class="w-10 h-10 rounded-full bg-secondary text-on-secondary flex items-center justify-center shadow-md ring-4 ring-white">
+<span class="material-symbols-outlined text-[20px]" data-icon="check" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+<span class="font-label-md text-label-md text-secondary">Draft</span>
+</div>
+<!-- Step 2: Dispatched (Active) -->
+<div class="relative z-10 flex flex-col items-center gap-2 group">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shadow-md ring-4 ring-white animate-pulse">
+<span class="material-symbols-outlined text-[20px]" data-icon="pending">pending</span>
+</div>
+<span class="font-label-md text-label-md text-on-background">Dispatched</span>
+</div>
+<!-- Step 3: Completed (Pending) -->
+<div class="relative z-10 flex flex-col items-center gap-2 group">
+<div class="w-10 h-10 rounded-full bg-surface-container-high text-outline flex items-center justify-center ring-4 ring-white">
+<span class="material-symbols-outlined text-[20px]" data-icon="flag">flag</span>
+</div>
+<span class="font-label-md text-label-md text-outline">Completed</span>
+</div>
+</div>
+</section>
+<!-- Form Section (Left Column) -->
+<section class="col-span-12 lg:col-span-8 flex flex-col gap-gutter">
+<div class="bg-white border border-outline-variant rounded-xl overflow-hidden">
+<div class="p-6 border-b border-outline-variant flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="edit_note">edit_note</span>
+<h2 class="font-headline-sm text-headline-sm">Trip Details</h2>
+</div>
+<div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Route Info -->
+<div class="space-y-4">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Route Specification</h3>
+<div>
+<label class="block text-[11px] font-bold text-outline mb-1 uppercase">Source Location</label>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" data-icon="location_on">location_on</span>
+<input class="w-full pl-10 pr-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all outline-none" type="text" value="Logistics Hub A - Austin, TX"/>
+</div>
+</div>
+<div>
+<label class="block text-[11px] font-bold text-outline mb-1 uppercase">Destination Location</label>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" data-icon="near_me">near_me</span>
+<input class="w-full pl-10 pr-4 py-2.5 border border-outline-variant rounded-lg focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all outline-none" placeholder="Enter destination..." type="text"/>
+</div>
+</div>
+</div>
+<!-- Resources -->
+<div class="space-y-4">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Asset Assignment</h3>
+<div>
+<label class="block text-[11px] font-bold text-outline mb-1 uppercase">Select Vehicle (Available)</label>
+<select class="w-full px-4 py-2.5 border border-error bg-error-container/5 rounded-lg focus:ring-2 focus:ring-error/20 focus:border-error transition-all outline-none appearance-none">
+<option>Freightliner M2 (TX-9921) - Heavy Cargo</option>
+<option>Mercedes Sprinter (TX-4402)</option>
+<option>Volvo FH16 (TX-1188) - Maintenance Due</option>
+</select>
+<div class="mt-2 flex items-start gap-2 bg-error-container p-3 rounded-lg border border-error/20">
+<span class="material-symbols-outlined text-error text-[18px]" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+<p class="text-on-error-container text-[12px] leading-tight">
+<strong>Vehicle Overloaded:</strong> Cargo weight (12.4t) exceeds vehicle capacity (10.0t) for the selected asset.
+                                        </p>
+</div>
+</div>
+<div>
+<label class="block text-[11px] font-bold text-outline mb-1 uppercase">Select Driver (Available)</label>
+<select class="w-full px-4 py-2.5 border border-error bg-error-container/5 rounded-lg focus:ring-2 focus:ring-error/20 focus:border-error transition-all outline-none appearance-none">
+<option>Carlos Mendez (ID: 882)</option>
+<option>Sarah Jenkins (ID: 412)</option>
+<option>James Wilson (ID: 009) - EXPIRED</option>
+</select>
+<div class="mt-2 flex items-start gap-2 bg-error-container p-3 rounded-lg border border-error/20">
+<span class="material-symbols-outlined text-error text-[18px]" data-icon="badge" style="font-variation-settings: 'FILL' 1;">badge</span>
+<p class="text-on-error-container text-[12px] leading-tight">
+<strong>Driver License Expired:</strong> Selected driver's CDL-Class A expired on Oct 12, 2023. Assignment blocked.
+                                        </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Form Footer Actions -->
+<div class="p-6 bg-surface-container-low border-t border-outline-variant flex justify-end gap-3">
+<button class="px-6 py-2.5 border border-outline-variant bg-white text-on-background rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors">
+                                Save as Draft
+                            </button>
+<button class="px-8 py-2.5 bg-outline text-white/50 cursor-not-allowed rounded-lg font-label-md text-label-md flex items-center gap-2" disabled="">
+<span class="material-symbols-outlined text-[18px]" data-icon="send">send</span>
+                                Dispatch Trip
+                            </button>
+</div>
+</div>
+</section>
+<!-- Status Summary (Right Column) -->
+<aside class="col-span-12 lg:col-span-4 flex flex-col gap-gutter">
+<div class="bg-white border border-outline-variant rounded-xl p-6">
+<h3 class="font-headline-sm text-headline-sm mb-6">Trip Manifest</h3>
+<div class="space-y-6">
+<div class="flex items-start gap-4">
+<div class="w-1 bg-secondary rounded-full h-12"></div>
+<div class="flex-1">
+<p class="text-outline text-[11px] font-bold uppercase">Estimated Duration</p>
+<p class="font-headline-sm text-headline-sm">4h 45m</p>
+<p class="text-on-surface-variant text-body-sm">312.4 Miles via I-35S</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-lg border border-outline-variant/30 space-y-3">
+<div class="flex justify-between items-center">
+<span class="text-body-sm text-outline">Priority</span>
+<span class="px-2 py-0.5 bg-tertiary-fixed text-on-tertiary-fixed rounded text-[10px] font-bold uppercase">High</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-body-sm text-outline">Load Type</span>
+<span class="text-body-sm font-bold">Perishables</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-body-sm text-outline">Refrigeration</span>
+<span class="text-body-sm text-secondary font-bold">Required (-4°C)</span>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/30">
+<button class="w-full py-3 border-2 border-secondary text-secondary font-bold rounded-lg hover:bg-secondary/5 transition-colors flex items-center justify-center gap-2" onclick="document.getElementById('completeTripModal').classList.remove('hidden')">
+<span class="material-symbols-outlined" data-icon="task_alt">task_alt</span>
+                                    Log Trip Completion
+                                </button>
+</div>
+</div>
+</div>
+<!-- Visual Feedback Map -->
+<div class="relative h-64 bg-surface-container-high rounded-xl overflow-hidden border border-outline-variant group">
+<div class="absolute inset-0 grayscale contrast-125 opacity-70 group-hover:opacity-100 transition-opacity">
+<div class="w-full h-full bg-cover bg-center" data-alt="A sophisticated digital map visualization of a transportation route through a sleek, modern city grid. The map is presented in a high-contrast minimalist light mode style, using subtle greys and deep blue lines to represent traffic flow. The route is highlighted in a vibrant neon-blue, with glowing pins at the start and end points. The lighting is crisp and technological, reflecting a high-end logistics interface." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCOrduX3EsBoLfvA-owJmtEPJ6oXrGWP9pqXNcrRGOMaMhAojvpbHgiY_vN1GtjuY1KQ78bpRtOQv2dS1-jyqcu2CLwb1uXaQ7d6q2xib17cO1NXJKIe6NK_Ew0PXsHQviKSNAl9jX-ktjSVffp6KOxvdMwSHq2Q2h3JzqLN8BIVsAjRcqqAldCb4tbovLyiWK7124xKxft_rXJnh7yXt8ir5-q2DbPt8o4EllwjlNOx4WJJvUZAy9M')"></div>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+<div class="absolute bottom-4 left-4 text-white">
+<p class="text-[10px] uppercase font-bold tracking-widest opacity-80">Active Route Preview</p>
+<p class="font-headline-sm text-headline-sm">Austin to Houston Corridor</p>
+</div>
+</div>
+</aside>
+</div>
+</div>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-4 bg-surface border-t border-outline-variant shadow-lg rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-[10px] font-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary font-bold" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="text-[10px] font-label-md">Trips</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="minor_crash">minor_crash</span>
+<span class="text-[10px] font-label-md">Fleet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="text-[10px] font-label-md">Alerts</span>
+</a>
+</nav>
+</main>
+<!-- Complete Trip Modal -->
+<div class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-primary-container/60 backdrop-blur-sm p-4" id="completeTripModal">
+<div class="bg-white w-full max-w-lg rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<h2 class="font-headline-sm text-headline-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="checklist">checklist</span>
+                    Complete Trip Logs
+                </h2>
+<button class="text-outline hover:text-on-background transition-colors" onclick="document.getElementById('completeTripModal').classList.add('hidden')">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<div class="p-8 space-y-6">
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-[11px] font-bold text-outline mb-1 uppercase">End Odometer Reading</label>
+<div class="relative">
+<span class="absolute right-3 top-1/2 -translate-y-1/2 text-outline text-body-sm">mi</span>
+<input class="w-full px-4 py-3 border border-outline-variant rounded-lg font-data-mono text-data-mono focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all outline-none" placeholder="42,198" type="number"/>
+</div>
+</div>
+<div>
+<label class="block text-[11px] font-bold text-outline mb-1 uppercase">Fuel Consumption</label>
+<div class="relative">
+<span class="absolute right-3 top-1/2 -translate-y-1/2 text-outline text-body-sm">gal</span>
+<input class="w-full px-4 py-3 border border-outline-variant rounded-lg font-data-mono text-data-mono focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all outline-none" placeholder="34.5" type="number"/>
+</div>
+</div>
+</div>
+<div>
+<label class="block text-[11px] font-bold text-outline mb-1 uppercase">Trip Notes / Discrepancies</label>
+<textarea class="w-full px-4 py-3 border border-outline-variant rounded-lg focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all outline-none" placeholder="Any maintenance issues or delays encountered..." rows="3"></textarea>
+</div>
+<div class="flex items-center gap-3 p-4 bg-secondary/5 border border-secondary/10 rounded-lg">
+<span class="material-symbols-outlined text-secondary" data-icon="info" style="font-variation-settings: 'FILL' 1;">info</span>
+<p class="text-[12px] text-on-surface-variant">Closing this trip will mark both <strong>TX-9921</strong> and <strong>Carlos Mendez</strong> as available for new assignments.</p>
+</div>
+</div>
+<div class="p-6 bg-surface-container-low border-t border-outline-variant flex gap-3">
+<button class="flex-1 py-3 border border-outline-variant bg-white text-on-background font-bold rounded-lg hover:bg-surface transition-colors" onclick="document.getElementById('completeTripModal').classList.add('hidden')">
+                    Cancel
+                </button>
+<button class="flex-1 py-3 bg-secondary text-on-secondary font-bold rounded-lg shadow-md hover:bg-secondary/90 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="cloud_upload">cloud_upload</span>
+                    Finalize Trip
+                </button>
+</div>
+</div>
+</div>
+<!-- Background Elements -->
+<div class="fixed top-0 left-0 w-full h-1/2 -z-10 bg-gradient-to-b from-surface-container-low to-transparent opacity-50"></div>
+<script>
+        // Simple Micro-interactions
+        document.querySelectorAll('input, select, textarea').forEach(el => {
+            el.addEventListener('focus', () => {
+                el.parentElement.classList.add('scale-[1.01]');
+                el.parentElement.classList.add('transition-transform');
+            });
+            el.addEventListener('blur', () => {
+                el.parentElement.classList.remove('scale-[1.01]');
+            });
+        });
+    </script>
+</body></html>

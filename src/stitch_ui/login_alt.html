@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TransitOps | Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for high-density feel */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#0058be",
+                        "on-background": "#1b1b1d",
+                        "inverse-surface": "#303032",
+                        "surface-bright": "#fcf8fa",
+                        "tertiary-container": "#271901",
+                        "tertiary": "#000000",
+                        "on-surface-variant": "#45464d",
+                        "surface-container-high": "#eae7e9",
+                        "secondary-container": "#2170e4",
+                        "on-primary-container": "#7c839b",
+                        "surface-tint": "#565e74",
+                        "inverse-on-surface": "#f3f0f2",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#bec6e0",
+                        "surface": "#fcf8fa",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#fefcff",
+                        "primary-fixed": "#dae2fd",
+                        "primary": "#000000",
+                        "surface-container-highest": "#e4e2e4",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#bec6e0",
+                        "surface-container": "#f0edef",
+                        "on-tertiary-fixed-variant": "#574425",
+                        "primary-container": "#131b2e",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#dcd9db",
+                        "on-secondary-fixed": "#001a42",
+                        "background": "#fcf8fa",
+                        "surface-container-low": "#f6f3f5",
+                        "tertiary-fixed-dim": "#dec29a",
+                        "surface-variant": "#e4e2e4",
+                        "outline": "#76777d",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#1b1b1d",
+                        "tertiary-fixed": "#fcdeb5",
+                        "on-secondary-fixed-variant": "#004395",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "outline-variant": "#c6c6cd",
+                        "on-primary-fixed": "#131b2e",
+                        "on-tertiary-container": "#98805d",
+                        "on-tertiary-fixed": "#271901",
+                        "secondary-fixed": "#d8e2ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "sidebar-collapsed": "72px",
+                        "sidebar-width": "260px",
+                        "gutter": "16px",
+                        "container-margin": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "data-mono": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col md:flex-row overflow-hidden">
+<!-- Top/Left Branded Panel (Control Environment) -->
+<aside class="relative flex-1 bg-primary-container text-on-primary-container p-gutter flex flex-col justify-between overflow-hidden min-h-[353px] md:min-h-screen">
+<!-- Abstract Background Detail -->
+<div class="absolute inset-0 opacity-20 pointer-events-none">
+<div class="w-full h-full bg-cover bg-center" data-alt="A sophisticated, dark-themed digital visualization of a transit network map with glowing nodes and interconnecting lines. The aesthetic is deep navy blue with subtle grid patterns, suggesting a high-tech logistics control center. Minimalist white geometric overlays create a sense of systematic precision and modern corporate authority." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBG2QeoJ_nmwNvJ1JTT0r_77Vqjxk3X0xLZ_WwWFHHLRJtOCY9UlMIScbJl6Hg1MS6Kt5s6jPij6zPSx_iNXmgzqxLLSALAXgkHA9ujGcdwGbu8KdIRYDF2gYAE0KcRP52BfJL4D2d8RNuQCuYtQST6RhT_BZ_RX1ekHC4tNGn_M43vn40pux4Cm290_GUJaWBG9-XQYoKa2OvgnVILb_g-ryw-KZu4rM0mITaYs0GekjBxDdqdEn9F')"></div>
+</div>
+<div class="relative z-10 flex flex-col h-full">
+<!-- Brand Logo -->
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-secondary flex items-center justify-center rounded-lg shadow-lg">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-on-secondary-container tracking-tight">TransitOps</h1>
+</div>
+<!-- Role List (Systematic Informational Sidebar) -->
+<div class="mt-auto mb-12">
+<p class="font-label-md text-label-md uppercase tracking-widest text-on-primary-container/60 mb-6">Select Access Portal</p>
+<div class="grid grid-cols-1 gap-3 max-w-sm">
+<!-- Fleet Manager -->
+<div class="group flex items-center gap-4 p-4 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all cursor-pointer">
+<div class="w-8 h-8 rounded-full bg-secondary-container/20 flex items-center justify-center group-hover:bg-secondary">
+<span class="material-symbols-outlined text-sm text-secondary-fixed" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+</div>
+<div>
+<p class="font-label-md text-on-secondary-container">Fleet Manager</p>
+<p class="text-[11px] text-on-primary-container/60">Global operations & analytics</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-on-primary-container/30 group-hover:text-white transition-colors">chevron_right</span>
+</div>
+<!-- Driver -->
+<div class="group flex items-center gap-4 p-4 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all cursor-pointer">
+<div class="w-8 h-8 rounded-full bg-secondary-container/20 flex items-center justify-center group-hover:bg-secondary">
+<span class="material-symbols-outlined text-sm text-secondary-fixed" style="font-variation-settings: 'FILL' 1;">route</span>
+</div>
+<div>
+<p class="font-label-md text-on-secondary-container">Driver</p>
+<p class="text-[11px] text-on-primary-container/60">Real-time trip management</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-on-primary-container/30 group-hover:text-white transition-colors">chevron_right</span>
+</div>
+<!-- Safety Officer -->
+<div class="group flex items-center gap-4 p-4 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all cursor-pointer">
+<div class="w-8 h-8 rounded-full bg-secondary-container/20 flex items-center justify-center group-hover:bg-secondary">
+<span class="material-symbols-outlined text-sm text-secondary-fixed" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<div>
+<p class="font-label-md text-on-secondary-container">Safety Officer</p>
+<p class="text-[11px] text-on-primary-container/60">Compliance & risk monitoring</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-on-primary-container/30 group-hover:text-white transition-colors">chevron_right</span>
+</div>
+<!-- Financial Analyst -->
+<div class="group flex items-center gap-4 p-4 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all cursor-pointer">
+<div class="w-8 h-8 rounded-full bg-secondary-container/20 flex items-center justify-center group-hover:bg-secondary">
+<span class="material-symbols-outlined text-sm text-secondary-fixed" style="font-variation-settings: 'FILL' 1;">payments</span>
+</div>
+<div>
+<p class="font-label-md text-on-secondary-container">Financial Analyst</p>
+<p class="text-[11px] text-on-primary-container/60">Revenue & expense reporting</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-on-primary-container/30 group-hover:text-white transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- Legal Footer -->
+<div class="mt-4 pt-6 border-t border-white/10">
+<p class="text-[10px] text-on-primary-container/40 uppercase tracking-widest">© 2024 TransitOps Logistics Suite v2.4.0</p>
+</div>
+</div>
+</aside>
+<!-- Bottom/Right Content Area (Data Environment) -->
+<main class="flex-1 bg-surface flex items-center justify-center p-gutter">
+<div class="w-full max-w-sm">
+<div class="mb-10">
+<h2 class="font-display-lg text-display-lg text-primary mb-2">Welcome Back</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Access your operational dashboard with your corporate credentials.</p>
+</div>
+<form class="space-y-6" onsubmit="event.preventDefault();">
+<!-- Email Field -->
+<div class="space-y-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant" for="email">Corporate Email</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">alternate_email</span>
+<input class="w-full h-11 pl-10 pr-4 bg-white border border-outline-variant rounded-lg font-body-md focus:ring-2 focus:ring-secondary focus:border-secondary transition-shadow outline-none text-on-surface" id="email" placeholder="name@transitops.com" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center">
+<label class="font-label-md text-label-md text-on-surface-variant" for="password">Password</label>
+<a class="font-label-md text-label-md text-secondary hover:underline" href="#">Forgot password?</a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">lock</span>
+<input class="w-full h-11 pl-10 pr-10 bg-white border border-outline-variant rounded-lg font-body-md focus:ring-2 focus:ring-secondary focus:border-secondary transition-shadow outline-none text-on-surface" id="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-secondary" type="button">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</div>
+</div>
+<!-- Remember Me & Policy -->
+<div class="flex items-center gap-3 py-2">
+<input class="w-4 h-4 rounded border-outline-variant text-secondary focus:ring-secondary cursor-pointer" id="remember" type="checkbox"/>
+<label class="font-body-sm text-body-sm text-on-surface-variant cursor-pointer" for="remember">Stay signed in on this terminal</label>
+</div>
+<!-- Primary Action -->
+<button class="w-full h-12 bg-primary text-white font-label-md rounded-lg hover:bg-secondary active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-sm" type="submit">
+                    Sign In
+                    <span class="material-symbols-outlined text-sm">login</span>
+</button>
+<!-- Status Context (Success Pill Example Style) -->
+<div class="flex items-center gap-2 p-3 bg-[#e2e8f0]/30 border border-outline-variant/30 rounded-lg">
+<span class="material-symbols-outlined text-secondary text-sm">info</span>
+<p class="text-[11px] text-on-surface-variant">System Status: All dispatch systems operational.</p>
+</div>
+</form>
+<div class="mt-12 text-center">
+<p class="text-xs text-on-surface-variant/60">
+                    Proprietary system for authorized personnel only. 
+                    <br/>
+                    Unauthorized access attempts are logged and reported.
+                </p>
+</div>
+</div>
+</main>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('.group.cursor-pointer').forEach(card => {
+            card.addEventListener('click', () => {
+                const role = card.querySelector('p.font-label-md').innerText;
+                const emailInput = document.getElementById('email');
+                
+                // Simulate role-based auto-fill or selection
+                const domains = {
+                    'Fleet Manager': 'alex.rivera@transitops.com',
+                    'Driver': 'j.smith@transitops.com',
+                    'Safety Officer': 's.compliance@transitops.com',
+                    'Financial Analyst': 'data.desk@transitops.com'
+                };
+                
+                emailInput.value = domains[role] || '';
+                emailInput.focus();
+                
+                // Visual feedback
+                card.classList.add('ring-2', 'ring-secondary');
+                setTimeout(() => card.classList.remove('ring-2', 'ring-secondary'), 300);
+            });
+        });
+    </script>
+</body></html>

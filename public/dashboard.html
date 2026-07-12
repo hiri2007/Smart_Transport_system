@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<script>
+  (function() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user && window.location.pathname !== '/login' && window.location.pathname !== '/') {
+      window.location.href = '/login';
+    }
+  })();
+</script>
+
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TransitOps Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary": "#0058be",
+                    "on-background": "#1b1b1d",
+                    "inverse-surface": "#303032",
+                    "surface-bright": "#fcf8fa",
+                    "tertiary-container": "#271901",
+                    "tertiary": "#000000",
+                    "on-surface-variant": "#45464d",
+                    "surface-container-high": "#eae7e9",
+                    "secondary-container": "#2170e4",
+                    "on-primary-container": "#7c839b",
+                    "surface-tint": "#565e74",
+                    "inverse-on-surface": "#f3f0f2",
+                    "on-primary": "#ffffff",
+                    "inverse-primary": "#bec6e0",
+                    "surface": "#fcf8fa",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-container": "#fefcff",
+                    "primary-fixed": "#dae2fd",
+                    "primary": "#000000",
+                    "surface-container-highest": "#e4e2e4",
+                    "on-error-container": "#93000a",
+                    "primary-fixed-dim": "#bec6e0",
+                    "surface-container": "#f0edef",
+                    "on-tertiary-fixed-variant": "#574425",
+                    "primary-container": "#131b2e",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "surface-dim": "#dcd9db",
+                    "on-secondary-fixed": "#001a42",
+                    "background": "#fcf8fa",
+                    "surface-container-low": "#f6f3f5",
+                    "tertiary-fixed-dim": "#dec29a",
+                    "surface-variant": "#e4e2e4",
+                    "outline": "#76777d",
+                    "error": "#ba1a1a",
+                    "on-secondary": "#ffffff",
+                    "on-surface": "#1b1b1d",
+                    "tertiary-fixed": "#fcdeb5",
+                    "on-secondary-fixed-variant": "#004395",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "outline-variant": "#c6c6cd",
+                    "on-primary-fixed": "#131b2e",
+                    "on-tertiary-container": "#98805d",
+                    "on-tertiary-fixed": "#271901",
+                    "secondary-fixed": "#d8e2ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "sidebar-collapsed": "72px",
+                    "sidebar-width": "260px",
+                    "gutter": "16px",
+                    "container-margin": "24px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "data-mono": ["JetBrains Mono"],
+                    "label-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "display-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "data-mono": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #c6c6cd; border-radius: 10px; }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(226, 232, 240, 0.6);
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- Navigation Drawer (Sidebar) - Desktop Only -->
+<aside class="hidden md:flex flex-col py-4 gap-1 fixed left-0 top-0 h-full w-sidebar-width bg-primary-container z-50 shadow-lg">
+<div class="px-6 mb-8 flex items-center gap-3">
+<span class="material-symbols-outlined text-on-primary-container text-2xl" data-icon="local_shipping">local_shipping</span>
+<h1 class="font-headline-sm text-headline-sm font-bold text-on-primary-container">TransitOps</h1>
+</div>
+<div class="mb-8 px-4 flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden border-2 border-on-primary-container/20">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a fleet manager named Alex Rivera, wearing a dark blue corporate shirt, set against a blurred office background with warm lighting. The image style is sharp and corporate, reflecting reliability and authority." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP-MP4H2age6_LTeWjUTYS47OUXvSHW7KjDWzDBqdQ-4C5tM_LnkciLLz4XoVjSk5idpDp4MHBee6zTrECtRi5TmPQ5fY1giTtJEeFIMPfWt7E-pbS-Q9fEmkw41S1qLaGDi9wxkHy_Cbi6ybdRAzkUHuGoi4xbSLjRRswOpus_nchVHMpN50UQVxnFWw4zUdoo667IUj8E7IahuDH8jz-YZX3d5d0SFUN0yQBZphZOcTJKidQsEMp"/>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-primary-container">Alex Rivera</span>
+<span class="text-[10px] text-on-primary-container/60 uppercase tracking-widest">Fleet Manager</span>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="bg-secondary-container text-on-secondary-container rounded-lg mx-2 flex items-center px-4 py-3 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="text-on-primary-container/70 flex items-center px-4 py-3 mx-2 hover:bg-secondary/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="local_shipping">local_shipping</span>
+<span class="font-label-md text-label-md">Fleet</span>
+</a>
+<a class="text-on-primary-container/70 flex items-center px-4 py-3 mx-2 hover:bg-secondary/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="person">person</span>
+<span class="font-label-md text-label-md">Drivers</span>
+</a>
+<a class="text-on-primary-container/70 flex items-center px-4 py-3 mx-2 hover:bg-secondary/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="route">route</span>
+<span class="font-label-md text-label-md">Trips</span>
+</a>
+<a class="text-on-primary-container/70 flex items-center px-4 py-3 mx-2 hover:bg-secondary/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="build">build</span>
+<span class="font-label-md text-label-md">Maintenance</span>
+</a>
+<a class="text-on-primary-container/70 flex items-center px-4 py-3 mx-2 hover:bg-secondary/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="local_gas_station">local_gas_station</span>
+<span class="font-label-md text-label-md">Fuel &amp; Expenses</span>
+</a>
+<a class="text-on-primary-container/70 flex items-center px-4 py-3 mx-2 hover:bg-secondary/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="analytics">analytics</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+<a class="text-on-primary-container/70 flex items-center px-4 py-3 mx-2 hover:bg-secondary/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="md:ml-sidebar-width flex flex-col min-h-screen">
+<!-- Top Bar -->
+<header class="bg-surface docked full-width top-0 sticky z-50 flex justify-between items-center px-gutter w-full h-14 border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-primary p-2">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<div class="hidden md:flex items-center gap-2">
+<span class="font-label-md text-label-md text-outline uppercase tracking-wider">Workspace</span>
+<span class="text-outline-variant">/</span>
+<span class="font-label-md text-label-md text-primary font-bold">Fleet Operations</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center bg-secondary-container/10 px-3 py-1 rounded-full border border-secondary-container/20">
+<span class="w-2 h-2 rounded-full bg-secondary mr-2 animate-pulse"></span>
+<span class="font-label-md text-label-md text-secondary">Fleet Manager Role</span>
+</div>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 rounded-full">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A small circular avatar icon of Alex Rivera, fleet manager, maintaining a clean and minimalist aesthetic with professional lighting and a neutral background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8lbmoJqAXfGZYt0Hd1Bz6M9t-pMcSYh-_23wy-UfG8EGnnZVqPx65doOgnCfiTbpUgtQLYnepCAoofsUalRNOGf_Eu2J_aO2mcQSLUyqQxPHGlr7STjybW7i4rJqp_a-nfM74JipMOc4gyTwbyMKIP7Re31hMzqwFPqjeSTkUfD5Bklh7wRvSVbrWfsxQb2eB-jlfgMvIgY9BcQa-ec3U1N1AbQ-NjBz3NZ21UD35PvrrHVAswwPT"/>
+</div>
+</div>
+</header>
+<!-- Scrollable Canvas -->
+<div class="p-gutter md:p-container-margin space-y-6 max-w-[1400px] mx-auto w-full">
+<!-- Dashboard Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-background">Operational Overview</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Real-time fleet tracking and utilization metrics.</p>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-4 py-2 bg-surface border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px] align-middle mr-1" data-icon="download">download</span> Export
+                    </button>
+<button class="px-4 py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[18px] align-middle mr-1" data-icon="add">add</span> New Trip
+                    </button>
+</div>
+</div>
+<!-- KPI Grid -->
+<section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+<!-- KPI Tile 1 -->
+<div class="bg-white border border-outline-variant p-4 flex flex-col justify-between hover:border-secondary transition-colors cursor-default">
+<span class="font-label-md text-label-md text-outline uppercase">Active Vehicles</span>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-primary">142</span>
+<span class="text-[10px] text-green-600 font-bold">+4%</span>
+</div>
+</div>
+<!-- KPI Tile 2 -->
+<div class="bg-white border border-outline-variant p-4 flex flex-col justify-between">
+<span class="font-label-md text-label-md text-outline uppercase">Available</span>
+<div class="mt-2">
+<span class="font-display-lg text-display-lg text-primary">28</span>
+</div>
+</div>
+<!-- KPI Tile 3 -->
+<div class="bg-white border border-outline-variant p-4 flex flex-col justify-between">
+<span class="font-label-md text-label-md text-outline uppercase">Maintenance</span>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-error">12</span>
+<span class="text-[10px] text-error font-bold">+2 today</span>
+</div>
+</div>
+<!-- KPI Tile 4 -->
+<div class="bg-white border border-outline-variant p-4 flex flex-col justify-between">
+<span class="font-label-md text-label-md text-outline uppercase">Active Trips</span>
+<div class="mt-2">
+<span class="font-display-lg text-display-lg text-primary">84</span>
+</div>
+</div>
+<!-- KPI Tile 5 -->
+<div class="bg-white border border-outline-variant p-4 flex flex-col justify-between">
+<span class="font-label-md text-label-md text-outline uppercase">Pending</span>
+<div class="mt-2">
+<span class="font-display-lg text-display-lg text-primary">16</span>
+</div>
+</div>
+<!-- KPI Tile 6 -->
+<div class="bg-white border border-outline-variant p-4 flex flex-col justify-between bg-primary-container/5 border-primary">
+<span class="font-label-md text-label-md text-secondary uppercase">Utilization %</span>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-secondary">92.4</span>
+<span class="text-sm font-bold text-secondary">%</span>
+</div>
+</div>
+</section>
+<!-- Filter Bar -->
+<section class="flex flex-wrap items-center gap-3 bg-surface-container-low p-3 rounded-xl">
+<div class="flex items-center gap-2 flex-1 min-w-[200px]">
+<span class="material-symbols-outlined text-outline" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-body-sm font-body-sm" placeholder="Search trips, vehicles..." type="text"/>
+</div>
+<div class="h-6 w-px bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-4 overflow-x-auto pb-1">
+<div class="flex flex-col">
+<label class="text-[10px] text-outline uppercase font-bold mb-1">Vehicle Type</label>
+<select class="bg-white border border-outline-variant rounded px-2 py-1 text-body-sm focus:ring-secondary focus:border-secondary">
+<option>All Types</option>
+<option>Heavy Duty</option>
+<option>Medium Duty</option>
+<option>Light Van</option>
+</select>
+</div>
+<div class="flex flex-col">
+<label class="text-[10px] text-outline uppercase font-bold mb-1">Status</label>
+<select class="bg-white border border-outline-variant rounded px-2 py-1 text-body-sm focus:ring-secondary focus:border-secondary">
+<option>All Active</option>
+<option>In Transit</option>
+<option>Loading</option>
+<option>Delayed</option>
+</select>
+</div>
+<div class="flex flex-col">
+<label class="text-[10px] text-outline uppercase font-bold mb-1">Region</label>
+<select class="bg-white border border-outline-variant rounded px-2 py-1 text-body-sm focus:ring-secondary focus:border-secondary">
+<option>North East</option>
+<option>West Coast</option>
+<option>Central</option>
+</select>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Main Trips List (2/3 width on desktop) -->
+<div class="lg:col-span-2 space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-on-background">Live Active Trips</h3>
+<span class="text-label-md font-label-md text-outline">Viewing 84 trips</span>
+</div>
+<div class="space-y-2">
+<!-- Trip Card 1 -->
+<div class="bg-white border border-outline-variant p-4 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:shadow-sm transition-shadow">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-data-mono text-data-mono text-primary">#TRP-9402</span>
+<span class="text-[10px] text-outline">•</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-semibold">Freightliner M2</span>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<div class="w-4 h-4 rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A portrait of a male truck driver in his 40s, wearing a high-visibility vest and a baseball cap, looking focused and professional. The background is a brightly lit warehouse interior with a modern industrial aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkCeSfkuSaxFdV05Ifb3MQ_Md7vaDwUgOuUHu8rbigQ8egSxSbGkvjff2LovH63ycKTnJkoCH1uEdoKKRK-M5TiS_cUhm-24yoPq8hryc2K-iWheE04Rg8sNrVIBznCPyy_LCpsaKc3e0gYsUzuGCEvqFW1PdMcF1I3_CDkGVGihNGLaIB2VhlCpEhn0nZWSeEBSlHRVvDx5M8W7NdtDSbikPYvSYpuOPl9iy8Tjo3uAk-LbvUm4IE"/>
+</div>
+<span class="text-body-sm text-outline">Marco Silva</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-none pt-3 sm:pt-0">
+<div class="flex flex-col items-end">
+<span class="bg-green-100 text-green-800 px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider">In Transit</span>
+<span class="text-[10px] text-outline mt-1">On schedule</span>
+</div>
+<div class="text-right">
+<span class="font-label-md text-label-md text-outline block uppercase">ETA</span>
+<span class="font-data-mono text-data-mono text-primary">14:45 PM</span>
+</div>
+<button class="p-2 text-outline hover:text-primary">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Trip Card 2 (Delayed) -->
+<div class="bg-white border border-outline-variant p-4 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:shadow-sm transition-shadow">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-error-container/10 flex items-center justify-center text-error">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-data-mono text-data-mono text-primary">#TRP-8821</span>
+<span class="text-[10px] text-outline">•</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-semibold">Volvo VNL 860</span>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<div class="w-4 h-4 rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A portrait of a female driver, early 30s, wearing casual work attire and smiling warmly. The lighting is bright and natural, suggesting an outdoor setting near a transport hub, maintaining the professional corporate tone." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLjmG8zKlboK7fRLn-pAZH28J8uXDXd3U8TF3If-OImh7ridlJtF0J88w400GnyGJ7r-2k0nENT3dbtkAIOshiC92JJZHRX-iWQSG6L5PB2SjRmA0VLGw_Yq3HTjpViGuHBxWG72EpUmSCLI9FFA5BzTXif7oOy0-PZlFpdBcDo0Y7lqhE4ukA5Dt_NX3U3NG8NwRcW8r_T8Qxjpsi3HW3TVZshr8CZ0sGQOi5EZhySRxZRJqfNl5j"/>
+</div>
+<span class="text-body-sm text-outline">Sarah Chen</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-none pt-3 sm:pt-0">
+<div class="flex flex-col items-end">
+<span class="bg-red-100 text-red-800 px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider">Delayed</span>
+<span class="text-[10px] text-error mt-1">+24 mins</span>
+</div>
+<div class="text-right">
+<span class="font-label-md text-label-md text-outline block uppercase">ETA</span>
+<span class="font-data-mono text-data-mono text-primary">15:10 PM</span>
+</div>
+<button class="p-2 text-outline hover:text-primary">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Trip Card 3 -->
+<div class="bg-white border border-outline-variant p-4 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:shadow-sm transition-shadow">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-data-mono text-data-mono text-primary">#TRP-9104</span>
+<span class="text-[10px] text-outline">•</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-semibold">Mercedes Actros</span>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<div class="w-4 h-4 rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A portrait of an experienced male driver, age 50s, with a friendly expression. He is wearing a professional fleet management uniform. The scene is brightly lit with high-end corporate studio lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjagq9WQYN7sRKNpQF4NTziVcUViSAN05tg6jj2JU7Gnw2GhPNXp2PXHHOSha-PJGx3GfAsLOjuyM-09hqwjzpoL704wmqMuuQL_HDqSUQg-wGXBD_m_2aFm2ZB4fkUQS0-ATRcdMcoxMFGYdZX4vmanfUFCvt6S17MaMbQQK1hCGmw4UEscX6rANR_2PIxYt9OCakuZd8qAu19k16XYXZDTF7pAzku3LMwDK6ujqwvbXJ-_fYt35Y"/>
+</div>
+<span class="text-body-sm text-outline">Elena Rodriguez</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-none pt-3 sm:pt-0">
+<div class="flex flex-col items-end">
+<span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider">Loading</span>
+<span class="text-[10px] text-outline mt-1">Depot 4</span>
+</div>
+<div class="text-right">
+<span class="font-label-md text-label-md text-outline block uppercase">ETA</span>
+<span class="font-data-mono text-data-mono text-primary">16:30 PM</span>
+</div>
+<button class="p-2 text-outline hover:text-primary">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Charts Section (1/3 width on desktop) -->
+<div class="space-y-4">
+<h3 class="font-headline-sm text-headline-sm text-on-background">Fleet Utilization</h3>
+<div class="bg-white border border-outline-variant p-6 rounded-xl space-y-6">
+<div class="space-y-4">
+<!-- Utilization Row 1 -->
+<div class="space-y-1">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-primary">Heavy Trucks</span>
+<span class="font-data-mono text-data-mono text-outline">98%</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 98%"></div>
+</div>
+</div>
+<!-- Utilization Row 2 -->
+<div class="space-y-1">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-primary">Vans</span>
+<span class="font-data-mono text-data-mono text-outline">74%</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 74%"></div>
+</div>
+</div>
+<!-- Utilization Row 3 -->
+<div class="space-y-1">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-primary">Reefer Units</span>
+<span class="font-data-mono text-data-mono text-outline">86%</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 86%"></div>
+</div>
+</div>
+<!-- Utilization Row 4 -->
+<div class="space-y-1">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-primary">Trailers</span>
+<span class="font-data-mono text-data-mono text-outline">42%</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 42%"></div>
+</div>
+</div>
+</div>
+<div class="pt-6 border-t border-outline-variant space-y-4">
+<h4 class="font-label-md text-label-md text-outline uppercase tracking-wider">Fleet Health Summary</h4>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1">
+<span class="text-[10px] text-outline font-bold">AVG DOWNTIME</span>
+<span class="font-headline-sm text-headline-sm text-primary">4.2h</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-[10px] text-outline font-bold">FUEL EFFICIENCY</span>
+<span class="font-headline-sm text-headline-sm text-primary">7.8 <span class="text-xs">MPG</span></span>
+</div>
+</div>
+</div>
+<div class="rounded-lg overflow-hidden h-32 relative">
+<div class="absolute inset-0 bg-secondary-container/5 flex items-center justify-center">
+<span class="text-[10px] text-secondary font-bold uppercase tracking-widest">Efficiency Waveform</span>
+</div>
+<!-- Simple Animated SVG Mockup for Waveform -->
+<svg class="absolute bottom-0 w-full h-full opacity-30" preserveaspectratio="none" viewbox="0 0 100 20">
+<path d="M0 10 Q 12.5 0, 25 10 T 50 10 T 75 10 T 100 10 V 20 H 0 Z" fill="#2170e4">
+<animate attributename="d" dur="3s" repeatcount="indefinite" values="M0 10 Q 12.5 0, 25 10 T 50 10 T 75 10 T 100 10 V 20 H 0 Z;
+                                                M0 10 Q 12.5 20, 25 10 T 50 10 T 75 10 T 100 10 V 20 H 0 Z;
+                                                M0 10 Q 12.5 0, 25 10 T 50 10 T 75 10 T 100 10 V 20 H 0 Z"></animate>
+</path>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Spacer for mobile bottom nav -->
+<div class="h-20 md:hidden"></div>
+</main>
+<!-- Bottom Nav Bar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-4 bg-surface border-t border-outline-variant shadow-lg rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-secondary font-bold scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-label-md text-label-md">Trips</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="minor_crash">minor_crash</span>
+<span class="font-label-md text-label-md">Fleet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-label-md text-label-md">Alerts</span>
+</a>
+</nav>
+<!-- FAB (Contextual for Home/Dashboard) -->
+<button class="fixed bottom-20 right-6 md:bottom-8 md:right-8 w-14 h-14 bg-primary text-on-primary rounded-full shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all z-40">
+<span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+</button>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+      // Update profile name
+      const nameEl = document.querySelector('aside span.font-label-md');
+      if (nameEl) nameEl.textContent = user.name;
+      
+      // Update employee ID / role
+      const roleEl = document.querySelector('aside span.text-[10px], aside span.text-on-primary-container\\/60');
+      if (roleEl) roleEl.textContent = user.role + ' (ID: ' + user.employee_id + ')';
+    }
+
+    // Fix sidebar links dynamically
+    const sidebarLinks = document.querySelectorAll('aside nav a');
+    sidebarLinks.forEach(link => {
+      const textEl = link.querySelector('span:not(.material-symbols-outlined)');
+      if (!textEl) return;
+      const text = textEl.textContent.trim().toLowerCase();
+      
+      if (text.includes('dashboard')) {
+        link.setAttribute('href', '/dashboard');
+      } else if (text.includes('fleet')) {
+        link.setAttribute('href', '/fleet');
+      } else if (text.includes('driver')) {
+        link.setAttribute('href', '/drivers');
+      } else if (text.includes('trip')) {
+        link.setAttribute('href', '/trips');
+      } else if (text.includes('maintenance')) {
+        link.setAttribute('href', '/maintenance');
+      } else if (text.includes('fuel') || text.includes('expense')) {
+        link.setAttribute('href', '/expenses');
+      } else if (text.includes('analytic')) {
+        link.setAttribute('href', '/analytics');
+      } else if (text.includes('setting')) {
+        link.setAttribute('href', '#');
+      }
+    });
+
+    // Fix active class for sidebar links based on route
+    const currentPath = window.location.pathname;
+    sidebarLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      if (href && href === currentPath) {
+        link.className = "bg-secondary-container text-on-secondary-container rounded-lg mx-2 flex items-center px-4 py-3 gap-3";
+      } else {
+        link.className = "text-on-primary-container/70 flex items-center px-4 py-3 mx-2 gap-3 hover:bg-secondary/10 transition-all rounded-lg";
+      }
+    });
+
+    // Fix mobile bottom nav links
+    const mobileLinks = document.querySelectorAll('main nav a, body > nav a');
+    mobileLinks.forEach(link => {
+      const textEl = link.querySelector('span:not(.material-symbols-outlined)');
+      if (!textEl) return;
+      const text = textEl.textContent.trim().toLowerCase();
+      
+      if (text.includes('home') || text.includes('dashboard')) {
+        link.setAttribute('href', '/dashboard');
+      } else if (text.includes('trip')) {
+        link.setAttribute('href', '/trips');
+      } else if (text.includes('fleet')) {
+        link.setAttribute('href', '/fleet');
+      } else if (text.includes('alert') || text.includes('notification')) {
+        link.setAttribute('href', '#');
+      }
+    });
+
+    // Wire up sign out if needed
+    const nav = document.querySelector('aside nav');
+    if (nav) {
+      const logoutBtn = document.createElement('a');
+      logoutBtn.className = "text-on-primary-container/70 flex items-center px-4 py-3 mx-2 gap-3 hover:bg-red-500/20 hover:text-red-300 transition-all rounded-lg mt-8 cursor-pointer";
+      logoutBtn.innerHTML = '<span class="material-symbols-outlined">logout</span><span class="font-label-md text-label-md">Sign Out</span>';
+      logoutBtn.addEventListener('click', () => {
+        localStorage.clear();
+        window.location.href = '/login';
+      });
+      nav.appendChild(logoutBtn);
+    }
+  });
+</script>
+
+<script>
+  async function loadDashboard() {
+    try {
+      // Load Stats
+      const statsRes = await fetch('/api/dashboard/stats');
+      const stats = await statsRes.ok ? await statsRes.json() : null;
+      if (stats) {
+        const tiles = document.querySelectorAll('section.grid > div');
+        tiles.forEach(tile => {
+          const span = tile.querySelector('span');
+          if (!span) return;
+          const label = span.textContent.trim().toLowerCase();
+          const valEl = tile.querySelector('.font-display-lg');
+          if (!valEl) return;
+          
+          if (label.includes('active vehicles')) valEl.textContent = stats.activeVehicles;
+          else if (label.includes('available')) valEl.textContent = stats.availableVehicles;
+          else if (label.includes('maintenance')) valEl.textContent = stats.maintenanceVehicles;
+          else if (label.includes('active trips')) valEl.textContent = stats.activeTrips;
+          else if (label.includes('pending')) valEl.textContent = stats.pendingTrips;
+          else if (label.includes('utilization')) valEl.textContent = stats.utilization;
+        });
+      }
+
+      // Load active trips list
+      const tripsRes = await fetch('/api/trips');
+      const trips = await tripsRes.json();
+      const activeTripsList = trips.filter(t => t.status !== 'Completed');
+      
+      const tripContainer = document.querySelector('main .lg\\:col-span-2 > div.space-y-2');
+      if (tripContainer) {
+        tripContainer.innerHTML = '';
+        if (activeTripsList.length === 0) {
+          tripContainer.innerHTML = '<div class="p-8 text-center text-outline text-body-md bg-white border border-outline-variant rounded-lg">No active trips at the moment.</div>';
+        }
+        activeTripsList.forEach(t => {
+          let badgeColor = 'bg-green-100 text-green-800';
+          if (t.status === 'Delayed') badgeColor = 'bg-red-100 text-red-800';
+          if (t.status === 'Loading') badgeColor = 'bg-blue-100 text-blue-800';
+
+          tripContainer.innerHTML += `
+            <div class="bg-white border border-outline-variant p-4 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:shadow-sm transition-shadow">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-full bg-secondary-container/10 flex items-center justify-center text-secondary">
+                  <span class="material-symbols-outlined">local_shipping</span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-data-mono text-data-mono text-primary">#${t.trip_number}</span>
+                    <span class="text-[10px] text-outline">•</span>
+                    <span class="font-body-sm text-body-sm text-on-surface-variant font-semibold">${t.vehicle_name}</span>
+                  </div>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="material-symbols-outlined text-[14px] text-outline">person</span>
+                    <span class="text-body-sm text-outline">${t.driver_name}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-none pt-3 sm:pt-0">
+                <div class="flex flex-col items-end">
+                  <span class="${badgeColor} px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider">${t.status}</span>
+                  <span class="text-[10px] text-outline mt-1">${t.notes}</span>
+                </div>
+                <div class="text-right">
+                  <span class="font-label-md text-label-md text-outline block uppercase">ETA</span>
+                  <span class="font-data-mono text-data-mono text-primary">${t.eta}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      }
+    } catch (err) {
+      console.error('Error loading dashboard data:', err);
+    }
+  }
+  document.addEventListener('DOMContentLoaded', loadDashboard);
+</script>
+</body></html>

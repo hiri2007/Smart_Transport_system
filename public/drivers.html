@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<script>
+  (function() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user && window.location.pathname !== '/login' && window.location.pathname !== '/') {
+      window.location.href = '/login';
+    }
+  })();
+</script>
+
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TransitOps | Drivers &amp; Safety Profiles</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fcf8fa;
+        }
+        .sidebar-transition {
+            transition: width 0.2s ease-in-out;
+        }
+        .bento-card {
+            background: #ffffff;
+            border: 1px solid #E2E8F0;
+            transition: all 0.2s ease;
+        }
+        .bento-card:hover {
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+        }
+        .safety-meter {
+            height: 4px;
+            border-radius: 2px;
+            background: #f1f5f9;
+            overflow: hidden;
+        }
+        .safety-fill {
+            height: 100%;
+            transition: width 1s ease-out;
+        }
+        @media (max-width: 767px) {
+            .mobile-hide { display: none; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#0058be",
+                        "on-background": "#1b1b1d",
+                        "inverse-surface": "#303032",
+                        "surface-bright": "#fcf8fa",
+                        "tertiary-container": "#271901",
+                        "tertiary": "#000000",
+                        "on-surface-variant": "#45464d",
+                        "surface-container-high": "#eae7e9",
+                        "secondary-container": "#2170e4",
+                        "on-primary-container": "#7c839b",
+                        "surface-tint": "#565e74",
+                        "inverse-on-surface": "#f3f0f2",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#bec6e0",
+                        "surface": "#fcf8fa",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#fefcff",
+                        "primary-fixed": "#dae2fd",
+                        "primary": "#000000",
+                        "surface-container-highest": "#e4e2e4",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#bec6e0",
+                        "surface-container": "#f0edef",
+                        "on-tertiary-fixed-variant": "#574425",
+                        "primary-container": "#131b2e",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#dcd9db",
+                        "on-secondary-fixed": "#001a42",
+                        "background": "#fcf8fa",
+                        "surface-container-low": "#f6f3f5",
+                        "tertiary-fixed-dim": "#dec29a",
+                        "surface-variant": "#e4e2e4",
+                        "outline": "#76777d",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#1b1b1d",
+                        "tertiary-fixed": "#fcdeb5",
+                        "on-secondary-fixed-variant": "#004395",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "outline-variant": "#c6c6cd",
+                        "on-primary-fixed": "#131b2e",
+                        "on-tertiary-container": "#98805d",
+                        "on-tertiary-fixed": "#271901",
+                        "secondary-fixed": "#d8e2ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "sidebar-collapsed": "72px",
+                        "sidebar-width": "260px",
+                        "gutter": "16px",
+                        "container-margin": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "data-mono": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background">
+<div class="flex min-h-screen">
+<!-- NavigationDrawer (Web) -->
+<aside class="hidden md:flex flex-col sidebar-transition bg-primary-container w-sidebar-width h-screen sticky top-0 z-40 overflow-y-auto">
+<div class="p-6 flex flex-col gap-6">
+<div class="flex items-center gap-3">
+<span class="font-headline-sm text-headline-sm font-bold text-on-primary-container">TransitOps</span>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3 bg-surface-container-low/10 p-3 rounded-lg">
+<div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of Alex Rivera, a 35-year-old Hispanic male fleet manager with a confident and kind expression. He is wearing a modern navy polo shirt, standing against a softly blurred background of a clean, high-tech logistics center. The lighting is crisp and natural, highlighting his expertise and authoritative role in a systematic corporate environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwGBm1cq_hbyxMSZKZCBMxYYRaD2l8MsGrgVHCp_K39KmynobesH4X8c4qo_zCkT7irDMZYttNsMb6G064gxXrKJgiVzReCiUyVTrXVznzhVhhkNLfBbAw51rFX8F5Cnubt8jL5XjB6d7y6aOciqUTwrBEgP1_O3hSiP_hO6G-nhY__ny3JaXoL3UwNksOij0SmHLMx3TNiCQEPXnER_HZm2lExkcpcQ1WBlFDKagrR7j9VBJQ1VBW"/>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-primary-container">Alex Rivera</span>
+<span class="text-[10px] text-on-primary-container/60 uppercase tracking-widest">ID: TX-492</span>
+</div>
+</div>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="text-on-primary-container/70 dark:text-on-surface-variant flex items-center px-4 py-3 mx-2 hover:bg-secondary/10 transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="text-on-primary-container/70 dark:text-on-surface-variant flex items-center px-4 py-3 mx-2 hover:bg-secondary/10 transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="local_shipping">local_shipping</span>
+<span class="font-label-md text-label-md">Fleet</span>
+</a>
+<!-- Active State for Drivers -->
+<a class="bg-secondary-container text-on-secondary-container rounded-lg mx-2 flex items-center px-4 py-3 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-md text-label-md">Drivers</span>
+</a>
+<a class="text-on-primary-container/70 dark:text-on-surface-variant flex items-center px-4 py-3 mx-2 hover:bg-secondary/10 transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="route">route</span>
+<span class="font-label-md text-label-md">Trips</span>
+</a>
+<a class="text-on-primary-container/70 dark:text-on-surface-variant flex items-center px-4 py-3 mx-2 hover:bg-secondary/10 transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="build">build</span>
+<span class="font-label-md text-label-md">Maintenance</span>
+</a>
+<a class="text-on-primary-container/70 dark:text-on-surface-variant flex items-center px-4 py-3 mx-2 hover:bg-secondary/10 transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="local_gas_station">local_gas_station</span>
+<span class="font-label-md text-label-md">Fuel &amp; Expenses</span>
+</a>
+<a class="text-on-primary-container/70 dark:text-on-surface-variant flex items-center px-4 py-3 mx-2 hover:bg-secondary/10 transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="analytics">analytics</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+<a class="text-on-primary-container/70 dark:text-on-surface-variant flex items-center px-4 py-3 mx-2 hover:bg-secondary/10 transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 min-w-0 flex flex-col relative pb-32 md:pb-20">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-30 bg-surface border-b border-outline-variant flex justify-between items-center px-gutter w-full h-14">
+<div class="flex items-center gap-4">
+<button class="md:hidden p-2 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Drivers &amp; Safety Profiles</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative mobile-hide">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center text-on-surface-variant/50">
+<span class="material-symbols-outlined text-body-md" data-icon="search">search</span>
+</span>
+<input class="bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-body-sm w-64 focus:ring-2 focus:ring-secondary/20" placeholder="Search drivers..." type="text"/>
+</div>
+<button class="p-2 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="p-gutter max-w-7xl mx-auto w-full space-y-6">
+<!-- KPI Header Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="bento-card p-4 rounded-xl">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-tighter">Total Drivers</p>
+<div class="flex justify-between items-end mt-2">
+<h2 class="font-display-lg text-display-lg text-primary">142</h2>
+<span class="text-body-sm text-secondary font-semibold">+3 this month</span>
+</div>
+</div>
+<div class="bento-card p-4 rounded-xl">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-tighter">Fleet Avg Score</p>
+<div class="flex justify-between items-end mt-2">
+<h2 class="font-display-lg text-display-lg text-primary">94.2</h2>
+<div class="flex items-center gap-1 text-green-600 bg-green-50 px-2 py-0.5 rounded text-[10px]">
+<span class="material-symbols-outlined !text-[12px]" data-icon="trending_up">trending_up</span>
+<span>2.1%</span>
+</div>
+</div>
+</div>
+<div class="bento-card p-4 rounded-xl border-l-4 border-l-error">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-tighter">License Expiry</p>
+<div class="flex justify-between items-end mt-2">
+<h2 class="font-display-lg text-display-lg text-error">08</h2>
+<span class="text-body-sm text-error font-semibold">Critical Action</span>
+</div>
+</div>
+<div class="bento-card p-4 rounded-xl">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-tighter">On-Duty Drivers</p>
+<div class="flex justify-between items-end mt-2">
+<h2 class="font-display-lg text-display-lg text-primary">98</h2>
+<span class="text-body-sm text-on-surface-variant/50">69% Utilization</span>
+</div>
+</div>
+</div>
+<!-- Main Driver List Table Environment -->
+<section class="bento-card rounded-xl overflow-hidden">
+<div class="p-4 border-b border-outline-variant flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<h3 class="font-headline-sm text-headline-sm">Active Fleet Roster</h3>
+<div class="flex gap-2">
+<button class="flex items-center gap-2 px-3 py-1.5 border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined !text-[18px]" data-icon="filter_list">filter_list</span>
+                                Filter
+                            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined !text-[18px]" data-icon="download">download</span>
+                                Export
+                            </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant border-b border-outline-variant">DRIVER IDENTITY</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant border-b border-outline-variant">LICENSE #</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant border-b border-outline-variant">EXPIRY DATE</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant border-b border-outline-variant">SAFETY SCORE</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant border-b border-outline-variant">STATUS</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant border-b border-outline-variant text-right">ACTION</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-secondary/10 flex items-center justify-center text-secondary font-bold text-xs">RM</div>
+<div>
+<div class="font-body-md text-body-md font-semibold">Robert Mitchell</div>
+<div class="text-body-sm text-on-surface-variant/60">Class A CDL</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-data-mono text-data-mono">TX-293848-A</td>
+<td class="px-6 py-4 font-body-md text-body-md text-on-surface">Oct 12, 2025</td>
+<td class="px-6 py-4">
+<div class="flex flex-col gap-1 w-24">
+<div class="flex justify-between items-center">
+<span class="text-[10px] font-bold text-secondary">98/100</span>
+</div>
+<div class="safety-meter">
+<div class="safety-fill bg-secondary w-[98%]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-green-100 text-green-700">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5"></span>
+                                            Available
+                                        </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-1 hover:bg-outline-variant/20 rounded transition-colors">
+<span class="material-symbols-outlined !text-[20px] text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 (Critical Expiry) -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-error/10 flex items-center justify-center text-error font-bold text-xs">SL</div>
+<div>
+<div class="font-body-md text-body-md font-semibold">Sarah Lawson</div>
+<div class="text-body-sm text-on-surface-variant/60">Heavy Haul Spec.</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-data-mono text-data-mono">TX-102945-C</td>
+<td class="px-6 py-4 font-body-md text-body-md text-error font-bold animate-pulse">Mar 15, 2024</td>
+<td class="px-6 py-4">
+<div class="flex flex-col gap-1 w-24">
+<div class="flex justify-between items-center">
+<span class="text-[10px] font-bold text-on-surface">82/100</span>
+</div>
+<div class="safety-meter">
+<div class="safety-fill bg-on-surface w-[82%]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 text-blue-700">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-500 mr-1.5"></span>
+                                            On Trip
+                                        </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-1 hover:bg-outline-variant/20 rounded transition-colors">
+<span class="material-symbols-outlined !text-[20px] text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-secondary/10 flex items-center justify-center text-secondary font-bold text-xs">JK</div>
+<div>
+<div class="font-body-md text-body-md font-semibold">James Kovic</div>
+<div class="text-body-sm text-on-surface-variant/60">Class B CDL</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-data-mono text-data-mono">TX-554109-B</td>
+<td class="px-6 py-4 font-body-md text-body-md text-on-surface">Jan 02, 2026</td>
+<td class="px-6 py-4">
+<div class="flex flex-col gap-1 w-24">
+<div class="flex justify-between items-center">
+<span class="text-[10px] font-bold text-secondary">95/100</span>
+</div>
+<div class="safety-meter">
+<div class="safety-fill bg-secondary w-[95%]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-400 mr-1.5"></span>
+                                            Off Duty
+                                        </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-1 hover:bg-outline-variant/20 rounded transition-colors">
+<span class="material-symbols-outlined !text-[20px] text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 (Suspended) -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-outline-variant/30 flex items-center justify-center text-on-surface-variant font-bold text-xs">DG</div>
+<div>
+<div class="font-body-md text-body-md font-semibold">David Goggins</div>
+<div class="text-body-sm text-on-surface-variant/60">Class A CDL</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-data-mono text-data-mono">TX-009211-A</td>
+<td class="px-6 py-4 font-body-md text-body-md text-on-surface">Jun 19, 2025</td>
+<td class="px-6 py-4">
+<div class="flex flex-col gap-1 w-24">
+<div class="flex justify-between items-center">
+<span class="text-[10px] font-bold text-error">54/100</span>
+</div>
+<div class="safety-meter">
+<div class="safety-fill bg-error w-[54%]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-red-100 text-red-700">
+<span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5"></span>
+                                            Suspended
+                                        </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-1 hover:bg-outline-variant/20 rounded transition-colors">
+<span class="material-symbols-outlined !text-[20px] text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Safety Insight Asymmetric Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 bento-card p-6 rounded-xl flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h4 class="font-headline-sm text-headline-sm">Safety Performance Analysis</h4>
+<select class="bg-surface-container-low border-none rounded-lg text-body-sm py-1.5 focus:ring-0">
+<option>Last 30 Days</option>
+<option>Last Quarter</option>
+</select>
+</div>
+<div class="h-64 w-full bg-surface-container-low rounded-lg relative overflow-hidden flex items-center justify-center">
+<!-- Placeholder for complex chart visual -->
+
+<div class="z-10 text-center flex flex-col items-center gap-2">
+<div class="flex items-end gap-1">
+<div class="w-8 bg-secondary h-32 rounded-t-sm"></div>
+<div class="w-8 bg-secondary h-40 rounded-t-sm"></div>
+<div class="w-8 bg-secondary h-24 rounded-t-sm"></div>
+<div class="w-8 bg-secondary h-48 rounded-t-sm"></div>
+<div class="w-8 bg-secondary h-36 rounded-t-sm"></div>
+<div class="w-8 bg-secondary h-44 rounded-t-sm"></div>
+<div class="w-8 bg-secondary h-28 rounded-t-sm"></div>
+<div class="w-8 bg-secondary h-52 rounded-t-sm"></div>
+</div>
+<span class="text-label-md text-on-surface-variant">Hard Braking &amp; Cornering Frequency by Route</span>
+</div>
+</div>
+</div>
+<div class="bento-card p-6 rounded-xl flex flex-col gap-6">
+<h4 class="font-headline-sm text-headline-sm">Compliance Alerts</h4>
+<div class="space-y-4">
+<div class="flex gap-3 p-3 bg-error-container/20 rounded-lg border border-error/10">
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+<div>
+<p class="font-body-md text-body-md font-bold text-error">Sarah Lawson: License</p>
+<p class="text-body-sm text-on-surface-variant">CDL Class A expiring in 4 days. Temporary freeze pending.</p>
+</div>
+</div>
+<div class="flex gap-3 p-3 bg-secondary-container/10 rounded-lg border border-secondary/10">
+<span class="material-symbols-outlined text-secondary" data-icon="info">info</span>
+<div>
+<p class="font-body-md text-body-md font-bold text-secondary">New Driver Onboarding</p>
+<p class="text-body-sm text-on-surface-variant">Michael Chen is 80% through background verification.</p>
+</div>
+</div>
+</div>
+<button class="mt-auto w-full py-2 bg-primary text-white font-label-md rounded-lg hover:bg-on-primary-container transition-colors">
+                            View All Compliance Tasks
+                        </button>
+</div>
+</div>
+</div>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-6 md:bottom-20 md:right-8 w-14 h-14 bg-secondary text-on-secondary rounded-full shadow-lg hover:shadow-xl transition-all flex items-center justify-center z-50 active:scale-90">
+<span class="material-symbols-outlined !text-[32px]" data-icon="person_add">person_add</span>
+</button>
+<!-- Status Legend Sticky Bar (Desktop Only) -->
+<div class="hidden md:flex fixed bottom-0 left-sidebar-width right-0 h-14 bg-surface border-t border-outline-variant items-center px-gutter justify-center gap-8 z-40">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mr-4">Status Key:</span>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-green-500"></span>
+<span class="text-label-md text-on-surface-variant">Available</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-blue-500"></span>
+<span class="text-label-md text-on-surface-variant">On Trip</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-slate-400"></span>
+<span class="text-label-md text-on-surface-variant">Off Duty</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-red-500"></span>
+<span class="text-label-md text-on-surface-variant">Suspended</span>
+</div>
+</div>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-4 bg-surface border-t border-outline-variant shadow-lg rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-[10px] font-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="text-[10px] font-label-md">Trips</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary font-bold" href="#">
+<span class="material-symbols-outlined" data-icon="minor_crash" style="font-variation-settings: 'FILL' 1;">minor_crash</span>
+<span class="text-[10px] font-label-md">Fleet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="text-[10px] font-label-md">Alerts</span>
+</a>
+</nav>
+<!-- Mobile Only Status Legend (Above Nav Bar) -->
+<div class="md:hidden fixed bottom-16 left-0 w-full py-2 bg-surface-container-low flex justify-center gap-4 text-[10px] font-bold uppercase tracking-tighter border-t border-outline-variant">
+<span class="text-green-600">● Avail</span>
+<span class="text-blue-600">● Trip</span>
+<span class="text-slate-500">● Off</span>
+<span class="text-red-600">● Susp</span>
+</div>
+</main>
+</div>
+<!-- Micro-interaction for safety meters -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fills = document.querySelectorAll('.safety-fill');
+            fills.forEach(fill => {
+                const targetWidth = fill.style.width;
+                fill.style.width = '0%';
+                setTimeout(() => {
+                    fill.style.width = targetWidth;
+                }, 300);
+            });
+        });
+    </script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+      // Update profile name
+      const nameEl = document.querySelector('aside span.font-label-md');
+      if (nameEl) nameEl.textContent = user.name;
+      
+      // Update employee ID / role
+      const roleEl = document.querySelector('aside span.text-[10px], aside span.text-on-primary-container\\/60');
+      if (roleEl) roleEl.textContent = user.role + ' (ID: ' + user.employee_id + ')';
+    }
+
+    // Fix sidebar links dynamically
+    const sidebarLinks = document.querySelectorAll('aside nav a');
+    sidebarLinks.forEach(link => {
+      const textEl = link.querySelector('span:not(.material-symbols-outlined)');
+      if (!textEl) return;
+      const text = textEl.textContent.trim().toLowerCase();
+      
+      if (text.includes('dashboard')) {
+        link.setAttribute('href', '/dashboard');
+      } else if (text.includes('fleet')) {
+        link.setAttribute('href', '/fleet');
+      } else if (text.includes('driver')) {
+        link.setAttribute('href', '/drivers');
+      } else if (text.includes('trip')) {
+        link.setAttribute('href', '/trips');
+      } else if (text.includes('maintenance')) {
+        link.setAttribute('href', '/maintenance');
+      } else if (text.includes('fuel') || text.includes('expense')) {
+        link.setAttribute('href', '/expenses');
+      } else if (text.includes('analytic')) {
+        link.setAttribute('href', '/analytics');
+      } else if (text.includes('setting')) {
+        link.setAttribute('href', '#');
+      }
+    });
+
+    // Fix active class for sidebar links based on route
+    const currentPath = window.location.pathname;
+    sidebarLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      if (href && href === currentPath) {
+        link.className = "bg-secondary-container text-on-secondary-container rounded-lg mx-2 flex items-center px-4 py-3 gap-3";
+      } else {
+        link.className = "text-on-primary-container/70 flex items-center px-4 py-3 mx-2 gap-3 hover:bg-secondary/10 transition-all rounded-lg";
+      }
+    });
+
+    // Fix mobile bottom nav links
+    const mobileLinks = document.querySelectorAll('main nav a, body > nav a');
+    mobileLinks.forEach(link => {
+      const textEl = link.querySelector('span:not(.material-symbols-outlined)');
+      if (!textEl) return;
+      const text = textEl.textContent.trim().toLowerCase();
+      
+      if (text.includes('home') || text.includes('dashboard')) {
+        link.setAttribute('href', '/dashboard');
+      } else if (text.includes('trip')) {
+        link.setAttribute('href', '/trips');
+      } else if (text.includes('fleet')) {
+        link.setAttribute('href', '/fleet');
+      } else if (text.includes('alert') || text.includes('notification')) {
+        link.setAttribute('href', '#');
+      }
+    });
+
+    // Wire up sign out if needed
+    const nav = document.querySelector('aside nav');
+    if (nav) {
+      const logoutBtn = document.createElement('a');
+      logoutBtn.className = "text-on-primary-container/70 flex items-center px-4 py-3 mx-2 gap-3 hover:bg-red-500/20 hover:text-red-300 transition-all rounded-lg mt-8 cursor-pointer";
+      logoutBtn.innerHTML = '<span class="material-symbols-outlined">logout</span><span class="font-label-md text-label-md">Sign Out</span>';
+      logoutBtn.addEventListener('click', () => {
+        localStorage.clear();
+        window.location.href = '/login';
+      });
+      nav.appendChild(logoutBtn);
+    }
+  });
+</script>
+
+<script>
+  async function loadDrivers() {
+    try {
+      const res = await fetch('/api/drivers');
+      const drivers = await res.json();
+      
+      const tbody = document.querySelector('table tbody');
+      if (tbody) {
+        tbody.innerHTML = '';
+        drivers.forEach(d => {
+          let statusPill = '';
+          if (d.status === 'Active') statusPill = '<span class="px-2 py-0.5 bg-green-100 text-green-800 rounded-full text-[11px] font-bold uppercase">Active</span>';
+          else if (d.status === 'In Transit') statusPill = '<span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full text-[11px] font-bold uppercase">In Transit</span>';
+          else statusPill = '<span class="px-2 py-0.5 bg-red-100 text-red-800 rounded-full text-[11px] font-bold uppercase">${d.status}</span>';
+          
+          let licensePill = d.license_status === 'Active' 
+            ? '<span class="text-green-600 font-bold uppercase text-[11px]">Valid</span>'
+            : '<span class="text-red-600 font-bold uppercase text-[11px]">Expired</span>';
+            
+          tbody.innerHTML += `
+            <tr class="hover:bg-surface-container-low transition-colors border-b border-outline-variant/30">
+              <td class="px-6 py-4 font-semibold">${d.name}</td>
+              <td class="px-6 py-4 font-data-mono">TX-${d.employee_id}</td>
+              <td class="px-6 py-4 font-data-mono">${d.cdl_class}</td>
+              <td class="px-6 py-4 font-data-mono">${d.license_expiry}</td>
+              <td class="px-6 py-4">${licensePill}</td>
+              <td class="px-6 py-4">${statusPill}</td>
+              <td class="px-6 py-4">
+                <button class="text-secondary hover:underline text-[12px] font-bold uppercase" onclick="showDriverDrawer(${d.id})">Edit</button>
+              </td>
+            </tr>
+          `;
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  window.showDriverDrawer = async function(id) {
+    try {
+      const res = await fetch('/api/drivers');
+      const list = await res.json();
+      const d = list.find(x => x.id === id);
+      if (!d) return;
+      
+      const drawer = document.querySelector('aside[class*="fixed right-0"]');
+      if (drawer) {
+        drawer.classList.remove('translate-x-full');
+        drawer.classList.add('translate-x-0');
+        
+        const title = drawer.querySelector('h3');
+        if (title) title.textContent = `Driver Profile: ${d.name}`;
+        
+        const inputs = drawer.querySelectorAll('input, select');
+        if (inputs.length >= 4) {
+          inputs[0].value = d.name;
+          inputs[1].value = d.cdl_class;
+          inputs[2].value = d.license_expiry;
+          // License Status select
+          inputs[3].value = d.license_status;
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadDrivers();
+    const closeBtn = document.querySelector('aside[class*="fixed right-0"] button');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        const drawer = document.querySelector('aside[class*="fixed right-0"]');
+        if (drawer) {
+          drawer.classList.remove('translate-x-0');
+          drawer.classList.add('translate-x-full');
+        }
+      });
+    }
+  });
+</script>
+</body></html>
